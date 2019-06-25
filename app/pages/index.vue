@@ -94,6 +94,7 @@ export default {
     },
     ResetTimer() {
       this.timer = 0
+      this.money = 0
     },
     toHms(t) {
       let hms = ''
