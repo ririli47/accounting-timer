@@ -5,10 +5,10 @@
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <div v-if="n < 6">
-              <label class="label">{{ n }}等級</label>
+              <label class="label level-lavel">{{ n }}等級</label>
             </div>
             <div v-else>
-              <label class="label">V{{ n - 6 }}等級</label>
+              <label class="label level-lavel">V{{ n - 6 }}等級</label>
             </div>
           </div>
           <div class="field-body">
@@ -21,7 +21,6 @@
                   placeholder="0"
                 />
               </p>
-              <p>{{ people[n - 1].num }}</p>
             </div>
           </div>
         </div>
@@ -29,10 +28,16 @@
     </div>
     <div class="main-content">
       <p>{{ toHms(timer) }}</p>
-      <p>{{ money }}円</p>
-      <button class="button is-primary" @click="startTimer">Start</button>
-      <button class="button is-primary" @click="stopTimer">Stop</button>
-      <button class="button is-primary" @click="ResetTimer">Reset</button>
+      <p>{{ Math.round(money) }}円</p>
+      <button class="button is-primary is-large" @click="startTimer">
+        Start
+      </button>
+      <button class="button is-primary is-large" @click="stopTimer">
+        Stop
+      </button>
+      <button class="button is-primary is-large" @click="ResetTimer">
+        Reset
+      </button>
     </div>
   </section>
 </template>
@@ -105,6 +110,9 @@ export default {
       }
 
       return hms
+    },
+    sliceMoney(money) {
+      return this.money.slice(0, 4)
     }
   }
 }
@@ -155,6 +163,12 @@ function padZero(v) {
 }
 
 .main-content {
-  flex: 4;
+  flex: 2;
+}
+.level-lavel {
+  width: 10vw;
+}
+.main-content p {
+  font-size: 5rem;
 }
 </style>
