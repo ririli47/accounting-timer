@@ -1,23 +1,71 @@
 <template>
   <section class="container">
     <div class="people-num">
-      <div v-for="n in 11" :key="n">
+      <div v-for="(account, index) in accounts" :key="`first-${index}`">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <div v-if="n < 6">
-              <label class="label level-lavel">{{ n }}等級</label>
+            <div v-if="account.level < 6">
+              <label class="label level-lavel">{{ account.level }}等級</label>
             </div>
             <div v-else>
-              <label class="label level-lavel">V{{ n - 6 }}等級</label>
+              <label class="label level-lavel"
+                >V{{ account.level - 6 }}等級</label
+              >
             </div>
           </div>
           <div class="field-body">
             <div class="field">
               <p class="control">
                 <input
-                  v-model="people[n - 1].num"
+                  v-model="account.num"
                   class="input"
                   type="number"
+                  min="0"
+                  placeholder="0"
+                />
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="button is-primary"
+        style="margin-top: 12px;"
+        @click="addPartTimeWorker()"
+      >
+        Add a part-time worker
+      </button>
+      <div v-for="partTimeWorker in partTimeWorkers" :key="partTimeWorker.id">
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label for="" class="label level-lavel">時給</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <p class="control">
+                <input
+                  v-model="partTimeWorker.salary"
+                  type="number"
+                  class="input"
+                  min="0"
+                  placeholder="0"
+                />
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label for="" class="label level-lavel">人数</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <p class="control">
+                <input
+                  v-model="partTimeWorker.num"
+                  type="number"
+                  class="input"
+                  min="0"
                   placeholder="0"
                 />
               </p>
@@ -26,6 +74,7 @@
         </div>
       </div>
     </div>
+
     <div class="main-content">
       <p>{{ toHms(timer) }}</p>
       <p>{{ Math.round(money) }}円</p>
@@ -48,32 +97,20 @@ export default {
     return {
       timer: 0,
       money: 0,
-      people: [
-        { level: 1, num: 0 },
-        { level: 2, num: 0 },
-        { level: 3, num: 0 },
-        { level: 4, num: 0 },
-        { level: 5, num: 0 },
-        { level: 6, num: 0 },
-        { level: 7, num: 0 },
-        { level: 8, num: 0 },
-        { level: 9, num: 0 },
-        { level: 10, num: 0 },
-        { level: 11, num: 0 }
+      accounts: [
+        { level: 1, salary: 2135, profitableSalary: 10000, num: 0 },
+        { level: 2, salary: 2396, profitableSalary: 10300, num: 0 },
+        { level: 3, salary: 2682, profitableSalary: 10700, num: 0 },
+        { level: 4, salary: 2969, profitableSalary: 11100, num: 0 },
+        { level: 5, salary: 3385, profitableSalary: 11700, num: 0 },
+        { level: 6, salary: 4010, profitableSalary: 12600, num: 0 },
+        { level: 7, salary: 4583, profitableSalary: 13500, num: 0 },
+        { level: 8, salary: 5208, profitableSalary: 14300, num: 0 },
+        { level: 9, salary: 5990, profitableSalary: 15500, num: 0 },
+        { level: 10, salary: 6875, profitableSalary: 16700, num: 0 },
+        { level: 11, salary: 7813, profitableSalary: 18100, num: 0 }
       ],
-      account: [
-        { level: 1, salary: 2135, profitableSalary: 10000 },
-        { level: 2, salary: 2396, profitableSalary: 10300 },
-        { level: 3, salary: 2682, profitableSalary: 10700 },
-        { level: 4, salary: 2969, profitableSalary: 11100 },
-        { level: 5, salary: 3385, profitableSalary: 11700 },
-        { level: 6, salary: 4010, profitableSalary: 12600 },
-        { level: 7, salary: 4583, profitableSalary: 13500 },
-        { level: 8, salary: 5208, profitableSalary: 14300 },
-        { level: 9, salary: 5990, profitableSalary: 15500 },
-        { level: 10, salary: 6875, profitableSalary: 16700 },
-        { level: 11, salary: 7813, profitableSalary: 18100 }
-      ]
+      partTimeWorkers: []
     }
   },
   methods: {
@@ -82,10 +119,14 @@ export default {
         // 処理内容
         this.timer += 1
 
-        for (let i = 0; i < this.people.length; i++) {
-          for (let j = 0; j < this.people[i].num; j++) {
-            this.money += this.account[this.people[i].level - 1].salary / 3600
-          }
+        this.accounts.forEach(employee => {
+          this.money += (employee.salary * employee.num) / 3600
+        })
+
+        if (this.partTimeWorkers.length > 0) {
+          this.partTimeWorkers.forEach(partTimeWorker => {
+            this.money += (partTimeWorker.salary * partTimeWorker.num) / 3600
+          })
         }
       }, 1000) // 1秒間隔で処理
     },
@@ -114,6 +155,12 @@ export default {
     },
     sliceMoney(money) {
       return this.money.slice(0, 4)
+    },
+    addPartTimeWorker() {
+      this.partTimeWorkers.push({
+        salary: 0,
+        num: 0
+      })
     }
   }
 }
