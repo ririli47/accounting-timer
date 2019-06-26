@@ -25,19 +25,23 @@
           </div>
         </div>
       </div>
+      <nuxt-link :to="{ path: '/costInfo' }">原価情報はこちら</nuxt-link>
     </div>
     <div class="main-content">
       <p>{{ toHms(timer) }}</p>
-      <p>{{ Math.round(money) }}円</p>
-      <button class="button is-primary is-large" @click="startTimer">
-        Start
-      </button>
-      <button class="button is-primary is-large" @click="stopTimer">
-        Stop
-      </button>
-      <button class="button is-primary is-large" @click="ResetTimer">
-        Reset
-      </button>
+      <p>人件費原価：{{ Math.round(money) }}円</p>
+      <p>共通費込み：{{ Math.round(moneyAddCommonCost) }}円</p>
+      <p>
+        <button class="button is-primary is-large" @click="startTimer">
+          Start
+        </button>
+        <button class="button is-primary is-large" @click="stopTimer">
+          Stop
+        </button>
+        <button class="button is-primary is-large" @click="ResetTimer">
+          Reset
+        </button>
+      </p>
     </div>
   </section>
 </template>
@@ -132,7 +136,7 @@ function padZero(v) {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
   margin: 0 auto;
   min-height: 100vh;
@@ -175,7 +179,7 @@ function padZero(v) {
   width: 10vw;
 }
 .main-content p {
-  font-size: 5rem;
+  font-size: 3rem;
 }
 @media screen and (max-width: 480px) {
   .container {
