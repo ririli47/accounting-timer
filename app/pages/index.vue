@@ -48,6 +48,7 @@ export default {
     return {
       timer: 0,
       money: 0,
+      moneyAddCommonCost: 0,
       people: [
         { level: 1, num: 0 },
         { level: 2, num: 0 },
@@ -62,17 +63,17 @@ export default {
         { level: 11, num: 0 }
       ],
       account: [
-        { level: 1, salary: 2135, profitableSalary: 10000 },
-        { level: 2, salary: 2396, profitableSalary: 10300 },
-        { level: 3, salary: 2682, profitableSalary: 10700 },
-        { level: 4, salary: 2969, profitableSalary: 11100 },
-        { level: 5, salary: 3385, profitableSalary: 11700 },
-        { level: 6, salary: 4010, profitableSalary: 12600 },
-        { level: 7, salary: 4583, profitableSalary: 13500 },
-        { level: 8, salary: 5208, profitableSalary: 14300 },
-        { level: 9, salary: 5990, profitableSalary: 15500 },
-        { level: 10, salary: 6875, profitableSalary: 16700 },
-        { level: 11, salary: 7813, profitableSalary: 18100 }
+        { level: 1, salary: 2135, profitableSalary: 10000, commonCost: 1750 },
+        { level: 2, salary: 2396, profitableSalary: 10300, commonCost: 1965 },
+        { level: 3, salary: 2682, profitableSalary: 10700, commonCost: 2199 },
+        { level: 4, salary: 2969, profitableSalary: 11100, commonCost: 2435 },
+        { level: 5, salary: 3385, profitableSalary: 11700, commonCost: 2800 },
+        { level: 6, salary: 4010, profitableSalary: 12600, commonCost: 3288 },
+        { level: 7, salary: 4583, profitableSalary: 13500, commonCost: 4496 },
+        { level: 8, salary: 5208, profitableSalary: 14300, commonCost: 4270 },
+        { level: 9, salary: 5990, profitableSalary: 15500, commonCost: 4911 },
+        { level: 10, salary: 6875, profitableSalary: 16700, commonCost: 5637 },
+        { level: 11, salary: 7813, profitableSalary: 18100, commonCost: 6407 }
       ]
     }
   },
@@ -85,6 +86,9 @@ export default {
         for (let i = 0; i < this.people.length; i++) {
           for (let j = 0; j < this.people[i].num; j++) {
             this.money += this.account[this.people[i].level - 1].salary / 3600
+            this.moneyAddCommonCost +=
+              this.account[this.people[i].level - 1].salary / 3600 +
+              this.account[this.people[i].level - 1].commonCost / 3600
           }
         }
       }, 1000) // 1秒間隔で処理
@@ -95,6 +99,7 @@ export default {
     ResetTimer() {
       this.timer = 0
       this.money = 0
+      this.moneyAddCommonCost = 0
     },
     toHms(t) {
       let hms = ''
@@ -171,5 +176,20 @@ function padZero(v) {
 }
 .main-content p {
   font-size: 5rem;
+}
+@media screen and (max-width: 480px) {
+  .container {
+    display: block;
+  }
+  .field {
+    display: flex;
+  }
+  .field-label {
+    flex: 1;
+    margin-left: 10%;
+  }
+  .field-body {
+    flex: 2;
+  }
 }
 </style>
