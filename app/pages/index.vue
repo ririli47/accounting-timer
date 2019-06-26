@@ -29,6 +29,10 @@
     <div class="main-content">
       <p>{{ toHms(timer) }}</p>
       <p>{{ Math.round(money) }}円</p>
+      <p>想定価格 {{ Math.round(estimatedMoney) }}円</p>
+      <p v-if="state === 1">
+        節約価格 {{ Math.round(estimatedMoney - money) }}円
+      </p>
       <button class="button is-primary is-large" @click="startTimer">
         Start
       </button>
@@ -38,6 +42,17 @@
       <button class="button is-primary is-large" @click="ResetTimer">
         Reset
       </button>
+      <div>
+        <div class="field-label is-normal">
+          <label class="label level-lavel">想定時間</label>
+        </div>
+        <input
+          v-model="estimatedTime"
+          class="input"
+          type="number"
+          placeholder="30分"
+        />
+      </div>
     </div>
   </section>
 </template>
@@ -46,6 +61,9 @@
 export default {
   data() {
     return {
+      state: 0, // 0 = initial, 1=stop, 2=start
+      estimatedMoney: 0,
+      estimatedTime: 0,
       timer: 0,
       money: 0,
       people: [
@@ -88,9 +106,19 @@ export default {
           }
         }
       }, 1000) // 1秒間隔で処理
+
+      this.estimatedMoney = 0
+      for (let i = 0; i < this.people.length; i++) {
+        const salaryPerMinutes =
+          this.account[this.people[i].level - 1].salary / 60
+        this.estimatedMoney +=
+          salaryPerMinutes * this.estimatedTime * this.people[i].num
+      }
+      this.state = 2
     },
     stopTimer() {
       clearInterval(this.intervalId)
+      this.state = 1
     },
     ResetTimer() {
       this.timer = 0
