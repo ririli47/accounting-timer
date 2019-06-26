@@ -30,45 +30,56 @@
       </div>
       <button
         class="button is-primary"
-        style="margin-top: 12px;"
+        style="margin-top: 12px; margin-bottom: 12px;"
         @click="addPartTimeWorker()"
       >
         Add a part-time worker
       </button>
-      <div v-for="partTimeWorker in partTimeWorkers" :key="partTimeWorker.id">
+      <div
+        v-for="(partTimeWorker, index) in partTimeWorkers"
+        :key="`second-${index}`"
+        style="border: 1px solid #9b9b9b; box-sizing: border-box; padding: 1rem; border-radius: 15px;"
+      >
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <label for="" class="label level-lavel">時給</label>
+            <label for="" class="label">No.{{ index }}</label>
           </div>
-          <div class="field-body">
-            <div class="field">
-              <p class="control">
-                <input
-                  v-model="partTimeWorker.salary"
-                  type="number"
-                  class="input"
-                  min="0"
-                  placeholder="0"
-                />
-              </p>
+          <div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label for="" class="label">時給</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control">
+                    <input
+                      v-model="partTimeWorker.salary"
+                      type="number"
+                      class="input"
+                      min="0"
+                      placeholder="0"
+                    />
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label for="" class="label level-lavel">人数</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <p class="control">
-                <input
-                  v-model="partTimeWorker.num"
-                  type="number"
-                  class="input"
-                  min="0"
-                  placeholder="0"
-                />
-              </p>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label for="" class="label">人数</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control">
+                    <input
+                      v-model="partTimeWorker.num"
+                      type="number"
+                      class="input"
+                      min="0"
+                      placeholder="0"
+                    />
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
