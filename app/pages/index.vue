@@ -4,14 +4,7 @@
       <div v-for="(account, index) in accounts" :key="`first-${index}`">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <div v-if="account.level < 6">
-              <label class="label level-lavel">{{ account.level }}等級</label>
-            </div>
-            <div v-else>
-              <label class="label level-lavel"
-                >V{{ account.level - 6 }}等級</label
-              >
-            </div>
+            <label class="label level-lavel">{{ account.text }}等級</label>
           </div>
           <div class="field-body">
             <div class="field">
@@ -101,6 +94,12 @@
           </div>
         </div>
       </div>
+      <div class="field is-horizontal">
+        <label class="checkbox">
+          <input v-model="commonCostRealMode" type="checkbox" />
+          共通費を一律2800円とする
+        </label>
+      </div>
 
       <nuxt-link :to="{ path: '/costInfo' }">原価情報はこちら</nuxt-link>
     </div>
@@ -133,6 +132,7 @@ export default {
   data() {
     return {
       state: 0, // 0 = initial, 1=stop, 2=start
+      commonCostRealMode: true,
       estimatedTime: 0,
       timer: 0,
       money: 0,
@@ -140,80 +140,102 @@ export default {
       accounts: [
         {
           level: 1,
+          text: '1',
           salary: 2135,
           profitableSalary: 10000,
           num: 0,
-          commonCost: 1750
+          commonCost: 1750,
+          commonCostReal: 2800
         },
         {
           level: 2,
+          text: '2',
           salary: 2396,
           profitableSalary: 10300,
           num: 0,
-          commonCost: 1965
+          commonCost: 1965,
+          commonCostReal: 2800
         },
         {
           level: 3,
+          text: '3',
           salary: 2682,
           profitableSalary: 10700,
           num: 0,
-          commonCost: 2199
+          commonCost: 2199,
+          commonCostReal: 2800
         },
         {
           level: 4,
+          text: '4',
           salary: 2969,
           profitableSalary: 11100,
           num: 0,
-          commonCost: 2435
+          commonCost: 2435,
+          commonCostReal: 2800
         },
         {
           level: 5,
+          text: '5',
           salary: 3385,
           profitableSalary: 11700,
           num: 0,
-          commonCost: 2800
+          commonCost: 2800,
+          commonCostReal: 2800
         },
         {
           level: 6,
+          text: 'V0',
           salary: 4010,
           profitableSalary: 12600,
           num: 0,
-          commonCost: 3288
+          commonCost: 3288,
+          commonCostReal: 2800
         },
         {
           level: 7,
+          text: 'V1',
           salary: 4583,
           profitableSalary: 13500,
           num: 0,
-          commonCost: 4496
+          commonCost: 4496,
+          commonCostReal: 2800
         },
         {
           level: 8,
+          text: 'V2',
           salary: 5208,
           profitableSalary: 14300,
           num: 0,
-          commonCost: 4270
+          commonCost: 4270,
+          commonCostReal: 2800
         },
         {
           level: 9,
+          text: 'V3',
           salary: 5990,
           profitableSalary: 15500,
           num: 0,
-          commonCost: 4911
+          commonCost: 4911,
+          commonCostReal: 2800
         },
         {
           level: 10,
+          text: 'V4',
           salary: 6875,
           profitableSalary: 16700,
           num: 0,
-          commonCost: 5637
+          commonCost: 5637,
+          commonCostReal: 2800
         },
         {
           level: 11,
+          text: 'V5',
           salary: 7813,
           profitableSalary: 18100,
           num: 0,
-          commonCost: 6407
+          commonCost: 6407,
+          commonCostReal: 2800
         }
       ],
       partTimeWorkers: []
@@ -225,9 +247,16 @@ export default {
       this.accounts.forEach(employee => {
         const salaryPerMinutes = employee.salary / 60
         const commonCostPerMinutes = employee.commonCost / 60
+        const commonCostRealPerMinutes = employee.commonCostReal / 60
         estimatedMoney += salaryPerMinutes * this.estimatedTime * employee.num
-        estimatedMoney +=
-          commonCostPerMinutes * this.estimatedTime * employee.num
+
+        if (this.commonCostRealMode) {
+          estimatedMoney +=
+            commonCostRealPerMinutes * this.estimatedTime * employee.num
+        } else {
+          estimatedMoney +=
+            commonCostPerMinutes * this.estimatedTime * employee.num
+        }
       })
       if (this.partTimeWorkers.length > 0) {
         this.partTimeWorkers.forEach(partTimeWorker => {
@@ -250,9 +279,15 @@ export default {
 
         this.accounts.forEach(employee => {
           this.money += (employee.salary * employee.num) / 3600
-          this.moneyAddCommonCost +=
-            (employee.salary * employee.num) / 3600 +
-            (employee.commonCost * employee.num) / 3600
+          if (this.commonCostRealMode) {
+            this.moneyAddCommonCost +=
+              (employee.salary * employee.num) / 3600 +
+              (employee.commonCostReal * employee.num) / 3600
+          } else {
+            this.moneyAddCommonCost +=
+              (employee.salary * employee.num) / 3600 +
+              (employee.commonCost * employee.num) / 3600
+          }
         })
 
         if (this.partTimeWorkers.length > 0) {
@@ -353,9 +388,13 @@ function padZero(v) {
 }
 .level-lavel {
   width: 10vw;
+  text-align: left;
 }
 .main-content p {
   font-size: 3rem;
+}
+.checkbox {
+  justify-content: center;
 }
 @media screen and (max-width: 480px) {
   .container {
