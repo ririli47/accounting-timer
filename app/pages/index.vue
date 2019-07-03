@@ -113,13 +113,21 @@
         節約価格：{{ Math.round(estimateMoney - money) }}円
       </p>
       <p>
-        <button class="button is-primary is-large" @click="startTimer">
+        <button
+          class="button is-link is-large"
+          @click="startTimer"
+          v-if="state == 0 || state == 1"
+        >
           Start
         </button>
-        <button class="button is-primary is-large" @click="stopTimer">
+        <button
+          class="button is-warning is-large"
+          @click="stopTimer"
+          v-if="state == 2"
+        >
           Stop
         </button>
-        <button class="button is-primary is-large" @click="ResetTimer">
+        <button class="button is-danger is-large" @click="ResetTimer">
           Reset
         </button>
       </p>
