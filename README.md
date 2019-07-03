@@ -8,6 +8,9 @@
 # install dependencies
 $ yarn install
 
+# start prettier-watch
+$ yarn prettier-watch
+
 # serve with hot reload at localhost:3000
 $ yarn run dev
 
