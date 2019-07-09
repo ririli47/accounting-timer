@@ -110,20 +110,20 @@
       <p>共通費込み：{{ Math.round(moneyAddCommonCost) }}円</p>
       <p v-if="estimatedTime !== 0">想定価格：{{ estimateMoney }}円</p>
       <p v-if="state === 1 && estimatedTime !== 0">
-        節約価格：{{ Math.round(estimateMoney - money) }}円
+        節約価格：{{ Math.round(estimateMoney - moneyAddCommonCost) }}円
       </p>
       <p>
         <button
+          v-if="state == 0 || state == 1"
           class="button is-link is-large"
           @click="startTimer"
-          v-if="state == 0 || state == 1"
         >
           Start
         </button>
         <button
+          v-if="state == 2"
           class="button is-warning is-large"
           @click="stopTimer"
-          v-if="state == 2"
         >
           Stop
         </button>
@@ -283,6 +283,7 @@ export default {
     startTimer() {
       this.intervalId = setInterval(() => {
         // 処理内容
+
         this.timer += 1
 
         this.accounts.forEach(employee => {
