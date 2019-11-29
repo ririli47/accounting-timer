@@ -1,7 +1,7 @@
 <template>
   <section class="container">
     <div class="people-num">
-      <div v-for="(account, index) in accounts" :key="`first-${index}`">
+      <div v-for="(account, index) in getAccounts" :key="`first-${index}`">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label level-lavel">{{ account.text }}等級</label>
@@ -10,11 +10,11 @@
             <div class="field">
               <p class="control">
                 <input
-                  v-model="account.num"
                   class="input"
                   type="number"
                   min="0"
                   placeholder="0"
+                  @blur="accountNumChange(account.level, $event.target.value)"
                 />
               </p>
             </div>
@@ -29,7 +29,7 @@
         Add a part-time worker
       </button>
       <div
-        v-for="(partTimeWorker, index) in partTimeWorkers"
+        v-for="(partTimeWorker, index) in getPartTimeWorkers"
         :key="`second-${index}`"
         style="border: 1px solid #9b9b9b; box-sizing: border-box; padding: 1rem; border-radius: 15px;"
       >
@@ -46,11 +46,17 @@
                 <div class="field">
                   <p class="control">
                     <input
-                      v-model="partTimeWorker.salary"
                       type="number"
                       class="input"
                       min="0"
                       placeholder="0"
+                      @blur="
+                        updatePartTimeWorkers(
+                          'salary',
+                          index,
+                          $event.target.value
+                        )
+                      "
                     />
                   </p>
                 </div>
@@ -64,11 +70,13 @@
                 <div class="field">
                   <p class="control">
                     <input
-                      v-model="partTimeWorker.num"
                       type="number"
                       class="input"
                       min="0"
                       placeholder="0"
+                      @blur="
+                        updatePartTimeWorkers('num', index, $event.target.value)
+                      "
                     />
                   </p>
                 </div>
@@ -85,239 +93,145 @@
           <div class="field">
             <p class="control">
               <input
-                v-model="estimatedTime"
                 class="input"
                 type="number"
                 placeholder="30分"
+                @blur="updateEstimateTime($event.target.value)"
               />
             </p>
           </div>
         </div>
       </div>
+
       <div class="field is-horizontal">
         <label class="checkbox">
-          <input v-model="commonCostRealMode" type="checkbox" />
+          <input
+            type="checkbox"
+            checked="getCommonCostRealMode"
+            @change="toggleCommonCostRealMode()"
+          />
           共通費を一律2800円とする
         </label>
       </div>
-
       <nuxt-link :to="{ path: '/costInfo' }">原価情報はこちら</nuxt-link>
     </div>
-
     <div class="main-content">
-      <p>{{ toHms(timer) }}</p>
-      <p>人件費原価：{{ Math.round(money) }}円</p>
-      <p>共通費込み：{{ Math.round(moneyAddCommonCost) }}円</p>
-      <p v-if="estimatedTime !== 0">想定価格：{{ estimateMoney }}円</p>
-      <p v-if="state === 1 && estimatedTime !== 0">
-        節約価格：{{ Math.round(estimateMoney - moneyAddCommonCost) }}円
-      </p>
+      <p>{{ toHms(getTimer) }}</p>
+      <p>人件費原価：{{ Math.round(getMoney) }}円</p>
       <p>
+        共通費込み：{{
+          Math.round(getMoney) + Math.round(getMoneyAddCommonCost)
+        }}円
+      </p>
+      <p v-if="getEstimateTime !== 0">
+        想定価格：{{ Math.round(getEstimateMoney) }}円
+      </p>
+      <p v-if="getTimerState === 3 && getEstimateTime !== 0">
+        節約価格：{{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円
+      </p>
+
+      <div>
         <button
-          v-if="state == 0 || state == 1"
+          v-if="getTimerState != 2"
           class="button is-link is-large"
-          @click="startTimer"
+          @click="startTimer()"
         >
           Start
         </button>
         <button
-          v-if="state == 2"
+          v-if="getTimerState == 2"
           class="button is-warning is-large"
-          @click="stopTimer"
+          @click="stopTimer()"
         >
           Stop
         </button>
-        <button class="button is-danger is-large" @click="ResetTimer">
+        <button
+          v-if="getTimerState != 1"
+          class="button is-danger is-large"
+          @click="resetTimer()"
+        >
           Reset
         </button>
-      </p>
+      </div>
     </div>
   </section>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import timerStates from '../mixins/timerStates'
+
 export default {
+  mixins: [timerStates],
   data() {
     return {
-      state: 0, // 0 = initial, 1=stop, 2=start
-      commonCostRealMode: true,
-      estimatedTime: 0,
-      timer: 0,
-      money: 0,
-      moneyAddCommonCost: 0,
-      accounts: [
-        {
-          level: 1,
-          text: '1',
-          salary: 2135,
-          profitableSalary: 10000,
-          num: 0,
-          commonCost: 1750,
-          commonCostReal: 2800
-        },
-        {
-          level: 2,
-          text: '2',
-          salary: 2396,
-          profitableSalary: 10300,
-          num: 0,
-          commonCost: 1965,
-          commonCostReal: 2800
-        },
-        {
-          level: 3,
-          text: '3',
-          salary: 2682,
-          profitableSalary: 10700,
-          num: 0,
-          commonCost: 2199,
-          commonCostReal: 2800
-        },
-        {
-          level: 4,
-          text: '4',
-          salary: 2969,
-          profitableSalary: 11100,
-          num: 0,
-          commonCost: 2435,
-          commonCostReal: 2800
-        },
-        {
-          level: 5,
-          text: '5',
-          salary: 3385,
-          profitableSalary: 11700,
-          num: 0,
-          commonCost: 2800,
-          commonCostReal: 2800
-        },
-        {
-          level: 6,
-          text: 'V0',
-          salary: 4010,
-          profitableSalary: 12600,
-          num: 0,
-          commonCost: 3288,
-          commonCostReal: 2800
-        },
-        {
-          level: 7,
-          text: 'V1',
-          salary: 4583,
-          profitableSalary: 13500,
-          num: 0,
-          commonCost: 4496,
-          commonCostReal: 2800
-        },
-        {
-          level: 8,
-          text: 'V2',
-          salary: 5208,
-          profitableSalary: 14300,
-          num: 0,
-          commonCost: 4270,
-          commonCostReal: 2800
-        },
-        {
-          level: 9,
-          text: 'V3',
-          salary: 5990,
-          profitableSalary: 15500,
-          num: 0,
-          commonCost: 4911,
-          commonCostReal: 2800
-        },
-        {
-          level: 10,
-          text: 'V4',
-          salary: 6875,
-          profitableSalary: 16700,
-          num: 0,
-          commonCost: 5637,
-          commonCostReal: 2800
-        },
-        {
-          level: 11,
-          text: 'V5',
-          salary: 7813,
-          profitableSalary: 18100,
-          num: 0,
-          commonCost: 6407,
-          commonCostReal: 2800
-        }
-      ],
-      partTimeWorkers: []
+      accountNums: {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0
+      }
     }
   },
   computed: {
-    estimateMoney: function() {
-      let estimatedMoney = 0
-      this.accounts.forEach(employee => {
-        const salaryPerMinutes = employee.salary / 60
-        const commonCostPerMinutes = employee.commonCost / 60
-        const commonCostRealPerMinutes = employee.commonCostReal / 60
-        estimatedMoney += salaryPerMinutes * this.estimatedTime * employee.num
-
-        if (this.commonCostRealMode) {
-          estimatedMoney +=
-            commonCostRealPerMinutes * this.estimatedTime * employee.num
-        } else {
-          estimatedMoney +=
-            commonCostPerMinutes * this.estimatedTime * employee.num
-        }
-      })
-      if (this.partTimeWorkers.length > 0) {
-        this.partTimeWorkers.forEach(partTimeWorker => {
-          const salaryPerMinutesOfTimeWorker = partTimeWorker.salary / 60
-
-          estimatedMoney +=
-            salaryPerMinutesOfTimeWorker *
-            this.estimatedTime *
-            partTimeWorker.num
-        })
-      }
-      return Math.round(estimatedMoney)
-    }
+    ...mapGetters({
+      getAccounts: 'getAccounts',
+      getTimerState: 'getTimerState',
+      getTimer: 'getTimer',
+      getMoney: 'getMoney',
+      getMoneyAddCommonCost: 'getMoneyAddCommonCost',
+      getEstimateMoney: 'getEstimateMoney',
+      getCommonCostRealMode: 'getCommonCostRealMode',
+      getEstimateTime: 'getEstimateTime',
+      getPartTimeWorkers: 'getPartTimeWorkers'
+    })
   },
   methods: {
+    accountNumChange(level, eValue) {
+      const accounts = {
+        level: level,
+        accountNum: eValue
+      }
+      this.accountNums[level] = eValue
+      this.$store.dispatch('updateAccountNum', accounts)
+      this.$store.commit('calcEstimateMoney', this.getEstimateTime)
+    },
     startTimer() {
+      const timerStateStart = this.timerStates.start
+      this.$store.dispatch('changeTimerState', timerStateStart)
+
       this.intervalId = setInterval(() => {
-        // 処理内容
-
-        this.timer += 1
-
-        this.accounts.forEach(employee => {
-          this.money += (employee.salary * employee.num) / 3600
-          if (this.commonCostRealMode) {
-            this.moneyAddCommonCost +=
-              (employee.salary * employee.num) / 3600 +
-              (employee.commonCostReal * employee.num) / 3600
-          } else {
-            this.moneyAddCommonCost +=
-              (employee.salary * employee.num) / 3600 +
-              (employee.commonCost * employee.num) / 3600
-          }
-        })
-
-        if (this.partTimeWorkers.length > 0) {
-          this.partTimeWorkers.forEach(partTimeWorker => {
-            this.money += (partTimeWorker.salary * partTimeWorker.num) / 3600
-            this.moneyAddCommonCost +=
-              (partTimeWorker.salary * partTimeWorker.num) / 3600
-          })
-        }
-      }, 1000) // 1秒間隔で処理
-
-      this.state = 2
+        this.$store.dispatch('addTimer', 1)
+      }, 1000)
     },
     stopTimer() {
+      const timerStateStop = this.timerStates.stop
+      this.$store.dispatch('changeTimerState', timerStateStop)
+
       clearInterval(this.intervalId)
-      this.state = 1
     },
-    ResetTimer() {
-      this.timer = 0
-      this.money = 0
-      this.moneyAddCommonCost = 0
+    resetTimer() {
+      const timerStateDefault = this.timerStates.default
+      this.$store.dispatch('changeTimerState', timerStateDefault)
+
+      clearInterval(this.intervalId)
+      this.$store.dispatch('clearState')
+    },
+    toggleCommonCostRealMode() {
+      this.$store.dispatch('toggleCommonCostRealMode')
+    },
+    updateEstimateTime(eValue) {
+      if (eValue === '') {
+        eValue = 0
+      }
+      this.$store.dispatch('updateEstimateTime', eValue)
     },
     toHms(t) {
       let hms = ''
@@ -335,18 +249,19 @@ export default {
 
       return hms
     },
-    sliceMoney(money) {
-      return this.money.slice(0, 4)
-    },
     addPartTimeWorker() {
-      this.partTimeWorkers.push({
-        salary: 0,
-        num: 0
-      })
+      this.$store.dispatch('addPartTimeWorker')
+    },
+    updatePartTimeWorkers(updateKey, index, eValue) {
+      const updateInfomation = {
+        updateKey: updateKey,
+        index: index,
+        value: eValue
+      }
+      this.$store.dispatch('updatePartTimeWorkers', updateInfomation)
     }
   }
 }
-
 function padZero(v) {
   if (v < 10) {
     return '0' + v
