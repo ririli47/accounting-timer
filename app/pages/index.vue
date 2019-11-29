@@ -118,11 +118,7 @@
     <div class="main-content">
       <p>{{ toHms(getTimer) }}</p>
       <p>人件費原価：{{ Math.round(getMoney) }}円</p>
-      <p>
-        共通費込み：{{
-          Math.round(getMoney) + Math.round(getMoneyAddCommonCost)
-        }}円
-      </p>
+      <p>共通費込み：{{ Math.round(getMoneyAddCommonCost) }}円</p>
       <p v-if="getEstimateTime !== 0">
         想定価格：{{ Math.round(getEstimateMoney) }}円
       </p>
