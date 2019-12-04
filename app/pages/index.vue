@@ -114,6 +114,7 @@
         </label>
       </div>
       <nuxt-link :to="{ path: '/costInfo' }">原価情報はこちら</nuxt-link>
+      <nuxt-link :to="{ path: '/features' }">今後の開発計画はこちら</nuxt-link>
     </div>
     <div class="main-content">
       <p>{{ toHms(getTimer) }}</p>
