@@ -223,6 +223,7 @@ export const mutations = {
     state.timer = 0
     state.money = 0
     state.timerState = 1
+    state.moneyAddCommonCost = 0
   }
 }
 

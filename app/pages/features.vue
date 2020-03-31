@@ -7,9 +7,6 @@
           <div class="tile">
             <div class="tile is-parent is-vertical">
               <article class="tile is-child notification is-primary">
-                <p class="card-title">ロゴ作成</p>
-              </article>
-              <article class="tile is-child notification is-primary">
                 <p class="card-title">LP（TOPページ）作成</p>
               </article>
               <article class="tile is-child notification is-primary">
@@ -40,7 +37,7 @@
           <div class="tile">
             <div class="tile is-parent is-vertical">
               <article class="tile is-child notification is-info">
-                <p class="card-title">サービス名策定</p>
+                <p class="card-title"></p>
               </article>
             </div>
           </div>
@@ -53,6 +50,12 @@
             <div class="tile is-parent is-vertical">
               <article class="tile is-child notification is-success">
                 <p class="card-title">vuex導入</p>
+              </article>
+              <article class="tile is-child notification is-success">
+                <p class="card-title">サービス名策定</p>
+              </article>
+              <article class="tile is-child notification is-success">
+                <p class="card-title">残り時間モード</p>
               </article>
             </div>
           </div>
