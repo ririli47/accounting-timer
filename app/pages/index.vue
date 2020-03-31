@@ -1,10 +1,105 @@
 <template>
   <section class="container">
     <div class="people-num">
-      <div v-for="(account, index) in getAccounts" :key="`first-${index}`">
+      <h2
+        class="subtitle button is-info"
+        id="config"
+        @click="toggleFormShowStatus()"
+      >
+        設定
+        <div></div>
+      </h2>
+      <div v-show="formShowStatus">
+        <div v-for="(account, index) in getAccounts" :key="`first-${index}`">
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label level-lavel">{{ account.text }}等級</label>
+            </div>
+            <div class="field-body">
+              <div class="field">
+                <p class="control">
+                  <input
+                    class="input"
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    @blur="accountNumChange(account.level, $event.target.value)"
+                  />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          class="button is-primary part-time-worker"
+          @click="addPartTimeWorker()"
+        >
+          Add a part-time worker
+        </button>
+        <div
+          class="part-time-worker-list"
+          v-for="(partTimeWorker, index) in getPartTimeWorkers"
+          :key="`second-${index}`"
+        >
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label for="" class="label">No.{{ index }}</label>
+            </div>
+            <div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label for="" class="label">時給</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <p class="control">
+                      <input
+                        type="number"
+                        class="input"
+                        min="0"
+                        placeholder="0"
+                        @blur="
+                          updatePartTimeWorkers(
+                            'salary',
+                            index,
+                            $event.target.value
+                          )
+                        "
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label for="" class="label">人数</label>
+                </div>
+                <div class="field-body">
+                  <div class="field">
+                    <p class="control">
+                      <input
+                        type="number"
+                        class="input"
+                        min="0"
+                        placeholder="0"
+                        @blur="
+                          updatePartTimeWorkers(
+                            'num',
+                            index,
+                            $event.target.value
+                          )
+                        "
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <label class="label level-lavel">{{ account.text }}等級</label>
+            <label class="label level-lavel">想定時間<br />(単位：分)</label>
           </div>
           <div class="field-body">
             <div class="field">
@@ -12,120 +107,71 @@
                 <input
                   class="input"
                   type="number"
-                  min="0"
-                  placeholder="0"
-                  @blur="accountNumChange(account.level, $event.target.value)"
+                  placeholder="30分"
+                  @blur="updateEstimateTime($event.target.value)"
                 />
               </p>
             </div>
           </div>
         </div>
-      </div>
-      <button
-        class="button is-primary"
-        style="margin-top: 12px; margin-bottom: 12px; width: 100%"
-        @click="addPartTimeWorker()"
-      >
-        Add a part-time worker
-      </button>
-      <div
-        v-for="(partTimeWorker, index) in getPartTimeWorkers"
-        :key="`second-${index}`"
-        style="border: 1px solid #9b9b9b; box-sizing: border-box; padding: 1rem; border-radius: 15px;"
-      >
-        <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label for="" class="label">No.{{ index }}</label>
-          </div>
-          <div>
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label for="" class="label">時給</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <p class="control">
-                    <input
-                      type="number"
-                      class="input"
-                      min="0"
-                      placeholder="0"
-                      @blur="
-                        updatePartTimeWorkers(
-                          'salary',
-                          index,
-                          $event.target.value
-                        )
-                      "
-                    />
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label for="" class="label">人数</label>
-              </div>
-              <div class="field-body">
-                <div class="field">
-                  <p class="control">
-                    <input
-                      type="number"
-                      class="input"
-                      min="0"
-                      placeholder="0"
-                      @blur="
-                        updatePartTimeWorkers('num', index, $event.target.value)
-                      "
-                    />
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="field is-horizontal">
-        <div class="field-label is-normal">
-          <label class="label level-lavel">想定時間<br />(単位：分)</label>
-        </div>
-        <div class="field-body">
-          <div class="field">
-            <p class="control">
-              <input
-                class="input"
-                type="number"
-                placeholder="30分"
-                @blur="updateEstimateTime($event.target.value)"
-              />
-            </p>
-          </div>
-        </div>
-      </div>
 
-      <div class="field is-horizontal">
-        <label class="checkbox">
-          <input
-            type="checkbox"
-            checked="getCommonCostRealMode"
-            @change="toggleCommonCostRealMode()"
-          />
-          共通費を一律2800円とする
-        </label>
+        <div class="field is-horizontal">
+          <label class="checkbox">
+            <input
+              type="checkbox"
+              checked="getCommonCostRealMode"
+              @change="toggleCommonCostRealMode()"
+            />
+            共通費を一律2800円とする
+          </label>
+        </div>
+        <nuxt-link :to="{ path: '/costInfo' }">原価情報はこちら</nuxt-link>
+        <nuxt-link :to="{ path: '/features' }"
+          >今後の開発計画はこちら</nuxt-link
+        >
       </div>
-      <nuxt-link :to="{ path: '/costInfo' }">原価情報はこちら</nuxt-link>
-      <nuxt-link :to="{ path: '/features' }">今後の開発計画はこちら</nuxt-link>
     </div>
     <div class="main-content">
-      <p>{{ toHms(getTimer) }}</p>
-      <p>人件費原価：{{ Math.round(getMoney) }}円</p>
-      <p>共通費込み：{{ Math.round(getMoneyAddCommonCost) }}円</p>
-      <p v-if="getEstimateTime !== 0">
-        想定価格：{{ Math.round(getEstimateMoney) }}円
-      </p>
-      <p v-if="getTimerState === 3 && getEstimateTime !== 0">
-        節約価格：{{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円
-      </p>
+      <h2 class="subtitle button is-info">Meeting状況</h2>
+      <table class="table is-hoverable">
+        <tr v-if="getEstimateTime === 0 || leftTimerMode">
+          <th class="table-th-left">経過時間</th>
+          <th>{{ toHms(getTimer) }}</th>
+        </tr>
+        <tr
+          v-if="getEstimateTime !== 0 && !leftTimerMode"
+          @click="toggleLeftTimerMode()"
+        >
+          <th class="table-th-left">残り時間</th>
+          <th>{{ toHms(getEstimateTime * 60 - getTimer) }}</th>
+        </tr>
+        <tr>
+          <th class="table-th-left">人件費原価</th>
+          <th>{{ Math.round(getMoney) }}円</th>
+        </tr>
+        <tr>
+          <th class="table-th-left">共通費込み</th>
+          <th>{{ Math.round(getMoneyAddCommonCost) }}円</th>
+        </tr>
+        <tr v-if="getEstimateTime !== 0 && leftTimerMode">
+          <th class="table-th-left">
+            想定価格
+          </th>
+          <th>{{ Math.round(getEstimateMoney) }}円</th>
+        </tr>
+        <tr v-if="getEstimateTime !== 0 && !leftTimerMode">
+          <th class="table-th-left">
+            残り予算
+          </th>
+          <th>{{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円</th>
+        </tr>
+        <tr v-if="getTimerState === 3 && getEstimateTime !== 0">
+          <th class="table-th-left">
+            節約価格
+          </th>
+          <th>{{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円</th>
+        </tr>
+      </table>
 
       <div>
         <button
@@ -148,6 +194,9 @@
           @click="resetTimer()"
         >
           Reset
+        </button>
+        <button class="button is-info is-large" @click="toggleLeftTimerMode()">
+          表示モード切り替え
         </button>
       </div>
     </div>
@@ -174,7 +223,9 @@ export default {
         9: 0,
         10: 0,
         11: 0
-      }
+      },
+      leftTimerMode: true,
+      formShowStatus: true
     }
   },
   computed: {
@@ -191,9 +242,15 @@ export default {
     })
   },
   methods: {
+    toggleLeftTimerMode() {
+      this.leftTimerMode = !this.leftTimerMode
+    },
+    toggleFormShowStatus() {
+      this.formShowStatus = !this.formShowStatus
+    },
     accountNumChange(level, eValue) {
       const accounts = {
-        level: level,
+        level,
         accountNum: eValue
       }
       this.accountNums[level] = eValue
@@ -251,8 +308,8 @@ export default {
     },
     updatePartTimeWorkers(updateKey, index, eValue) {
       const updateInfomation = {
-        updateKey: updateKey,
-        index: index,
+        updateKey,
+        index,
         value: eValue
       }
       this.$store.dispatch('updatePartTimeWorkers', updateInfomation)
@@ -274,7 +331,6 @@ function padZero(v) {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
   text-align: center;
 }
 
@@ -289,9 +345,9 @@ function padZero(v) {
 }
 
 .subtitle {
+  width: 100%;
   font-weight: 300;
-  font-size: 42px;
-  color: #526488;
+  font-size: 20px;
   word-spacing: 5px;
   padding-bottom: 15px;
 }
@@ -300,15 +356,34 @@ function padZero(v) {
   padding-top: 15px;
 }
 
+.part-time-worker {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.part-time-worker-list {
+  border: 1px solid #9b9b9b;
+  box-sizing: border-box;
+  padding: 1rem;
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+
 .people-num {
-  flex: 1;
+  width: 30%;
 }
 
 .main-content {
-  flex: 2;
+  width: 70%;
+  height: 100%;
+  margin-left: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .level-lavel {
-  width: 10vw;
+  font-size: 1rem;
   text-align: left;
 }
 .main-content p {
@@ -317,7 +392,63 @@ function padZero(v) {
 .checkbox {
   justify-content: center;
 }
+
+.table {
+  width: 100%;
+}
+
+.table th {
+  padding: 2rem 2rem;
+  font-size: 2rem;
+  text-align: left;
+}
+
+.table-th-left {
+  width: 60%;
+}
+
+.subtitle .button .is-info::after {
+  display: block;
+  width: 15px;
+  height: 15px;
+  border-top: solid 3px #697b91;
+  border-right: solid 3px #697b91;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
 @media screen and (max-width: 480px) {
+  .subtitle {
+    width: 95%;
+  }
+  .people-num {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .part-time-worker {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    width: 80%;
+  }
+
+  .part-time-worker-list {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .checkbox {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .main-content {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
   .container {
     display: block;
   }
@@ -330,6 +461,10 @@ function padZero(v) {
   }
   .field-body {
     flex: 2;
+  }
+  .table th {
+    padding: 0.75rem 0.75rem;
+    font-size: 1rem;
   }
 }
 </style>
