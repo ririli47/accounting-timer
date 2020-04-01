@@ -138,10 +138,7 @@
           <th class="table-th-left">経過時間</th>
           <th>{{ toHms(getTimer) }}</th>
         </tr>
-        <tr
-          v-if="getEstimateTime !== 0 && !leftTimerMode"
-          @click="toggleLeftTimerMode()"
-        >
+        <tr v-if="getEstimateTime !== 0 && !leftTimerMode">
           <th class="table-th-left">残り時間</th>
           <th>{{ toHms(getEstimateTime * 60 - getTimer) }}</th>
         </tr>
