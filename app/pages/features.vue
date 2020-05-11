@@ -10,10 +10,13 @@
                 <p class="card-title">LP（TOPページ）作成</p>
               </article>
               <article class="tile is-child notification is-primary">
-                <p class="card-title">ログイン（アカウント）作成</p>
+                <p class="card-title">サービス基盤作成</p>
               </article>
               <article class="tile is-child notification is-primary">
-                <p class="card-title">サービス基盤作成</p>
+                <p class="card-title">ミーティング登録</p>
+              </article>
+              <article class="tile is-child notification is-primary">
+                <p class="card-title">議事録登録</p>
               </article>
             </div>
           </div>
@@ -25,19 +28,7 @@
           <div class="tile">
             <div class="tile is-parent is-vertical">
               <article class="tile is-child notification is-warning">
-                <p class="card-title">TypeScript導入</p>
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column outside-box">
-        <h2 class="column-title">DONE</h2>
-        <div class="tile is-ancestor">
-          <div class="tile">
-            <div class="tile is-parent is-vertical">
-              <article class="tile is-child notification is-info">
-                <p class="card-title"></p>
+                <p class="card-title">画面リニューアル</p>
               </article>
             </div>
           </div>
@@ -48,14 +39,11 @@
         <div class="tile is-ancestor">
           <div class="tile">
             <div class="tile is-parent is-vertical">
-              <article class="tile is-child notification is-success">
-                <p class="card-title">vuex導入</p>
+              <article class="tile is-child notification is-primary">
+                <p class="card-title">ログイン（アカウント）作成</p>
               </article>
-              <article class="tile is-child notification is-success">
-                <p class="card-title">サービス名策定</p>
-              </article>
-              <article class="tile is-child notification is-success">
-                <p class="card-title">残り時間モード</p>
+              <article class="tile is-child notification is-primary">
+                <p class="card-title">テンプレート登録</p>
               </article>
             </div>
           </div>

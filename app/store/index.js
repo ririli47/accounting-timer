@@ -1,3 +1,8 @@
+import firebase from '~/plugins/firebase'
+const db = firebase.firestore()
+
+const userRef = db.collection('users')
+
 export const state = () => ({
   timerState: 1,
   timer: 0,
@@ -107,10 +112,18 @@ export const state = () => ({
       commonCostReal: 2800
     }
   ],
-  partTimeWorkers: []
+  partTimeWorkers: [],
+  user: null,
+  isLogin: false
 })
 
 export const getters = {
+  getUser(state) {
+    return state.user
+  },
+  getIsLogin(state) {
+    return state.isLogin
+  },
   getTimer(state) {
     return state.timer
   },
@@ -141,6 +154,15 @@ export const getters = {
 }
 
 export const mutations = {
+  setUser(state, payload) {
+    state.user = payload
+  },
+  setIsLogin(state, payload) {
+    state.isLogin = payload
+  },
+  signOut(state) {
+    state.user = null
+  },
   addTimer(state, addTime) {
     state.timer += addTime
   },
@@ -197,6 +219,10 @@ export const mutations = {
 
     // 正社員分
     state.accounts.forEach(employee => {
+      if (isNaN(employee.num)) {
+        employee.num = 0
+      }
+
       const salaryPerMinutes = employee.salary / 60
       const commonCostPerMinutes = employee.commonCost / 60
       const commonCostRealPerMinutes = employee.commonCostReal / 60
@@ -212,6 +238,10 @@ export const mutations = {
 
     // 契約社員分
     state.partTimeWorkers.forEach(employee => {
+      if (isNaN(employee.num)) {
+        employee.num = 0
+      }
+
       const salaryPerMinutes = employee.salary / 60
 
       state.estimateMoney += salaryPerMinutes * employee.num * estimateTime
@@ -228,6 +258,23 @@ export const mutations = {
 }
 
 export const actions = {
+  async nuxtClientInit({ dispatch, commit }) {
+    const user = await dispatch('getAuthStateus')
+
+    if (user) {
+      const { email, displayName, uid, metadata } = user
+
+      const isUserExist = dispatch('fetchUser', uid)
+
+      if (!isUserExist) {
+        dispatch('registerUser', { uid, email })
+      }
+
+      await dispatch('templates/fetchTemplates', user.uid)
+      await commit('setUser', { email, displayName, uid, metadata })
+      await commit('setIsLogin', true)
+    }
+  },
   addTimer({ commit }, addTime) {
     commit('addTimer', addTime)
     commit('calcMoney', addTime)
@@ -253,5 +300,81 @@ export const actions = {
   },
   updatePartTimeWorkers({ commit }, updateInfomation) {
     commit('updatePartTimeWorkers', updateInfomation)
+  },
+  setUser({ commit }, user) {
+    commit('setUser', user)
+  },
+  setIsLogin({ commit }, isLogin) {
+    commit('setIsLogin', isLogin)
+  },
+
+  async googleSignIn({ dispatch, commit }) {
+    const provider = new firebase.auth.GoogleAuthProvider()
+    await firebase.auth().signInWithPopup(provider)
+
+    const user = await dispatch('getAuthStateus')
+    if (user) {
+      console.log('user found')
+      const { email, displayName, uid, metadata } = user
+
+      const isUserExist = dispatch('fetchUser', uid)
+
+      if (!isUserExist) {
+        dispatch('registerUser', { uid, email })
+      }
+
+      commit('setUser', { email, displayName, uid, metadata })
+    } else {
+      console.log('user not found')
+
+      commit('signOut')
+      this.$router.push('/')
+    }
+  },
+  getAuthStateus() {
+    return new Promise((resolve, reject) => {
+      firebase.auth().onAuthStateChanged(user => {
+        resolve(user || false)
+      })
+    })
+  },
+  googleSignOut({ commit }) {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        commit('signOut')
+        this.$router.push('/')
+      })
+      .catch(() => {
+        console.log('sign out error')
+      })
+  },
+  fetchUser({ commit }, userId) {
+    userRef
+      .doc(userId)
+      .get()
+      .then(res => {
+        console.log('success : fetchUser')
+        return true
+      })
+      .catch(error => {
+        console.log('error : ' + error)
+        return false
+      })
+  },
+  registerUser({ commit }, user) {
+    console.log(user)
+    userRef
+      .doc(user.uid)
+      .set({
+        email: user.email
+      })
+      .then(function(docRef) {
+        console.log('success')
+      })
+      .catch(function(error) {
+        console.error('Error adding document: ', error)
+      })
   }
 }

@@ -39,7 +39,8 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // Doc:https://github.com/nuxt-community/modules/tree/master/packages/bulma
-    '@nuxtjs/bulma'
+    '@nuxtjs/bulma',
+    'nuxt-client-init-module'
   ],
   /*
    ** Axios module configuration
@@ -47,7 +48,9 @@ export default {
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
   },
-
+  // env: {
+  //   enviroment: process.env.ENVIROMENT || 'develop'
+  // },
   /*
    ** Build configuration
    */
