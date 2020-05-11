@@ -19,8 +19,11 @@
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/bulma": "^1.2.1",
     "cross-env": "^5.2.0",
+    "firebase": "^7.14.2",
     "nuxt": "^2.4.0",
-    "onchange": "^6.0.0"
+    "nuxt-client-init-module": "^0.1.8",
+    "onchange": "^6.0.0",
+    "save": "^2.4.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",

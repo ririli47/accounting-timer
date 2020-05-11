@@ -1,18 +1,20 @@
 <template>
   <section class="container">
     <table class="table is-fullwidth">
-      <tr>
-        <th>等級</th>
-        <th>人件費原価（人時）</th>
-        <th>共通費（人時）※一律</th>
-        <th>共通費（人時）※共通費原価*0.82</th>
-      </tr>
-      <tr v-for="n in 11" :key="n">
-        <th>{{ account[n - 1].text }}</th>
-        <th>{{ account[n - 1].salary }}</th>
-        <th>{{ account[n - 1].commonCostReal }}</th>
-        <th>{{ account[n - 1].commonCost }}</th>
-      </tr>
+      <tbody>
+        <tr>
+          <th>等級</th>
+          <th>人件費原価（人時）</th>
+          <th>共通費（人時）※一律</th>
+          <th>共通費（人時）※共通費原価*0.82</th>
+        </tr>
+        <tr v-for="n in 11" :key="n">
+          <th>{{ account[n - 1].text }}</th>
+          <th>{{ account[n - 1].salary }}</th>
+          <th>{{ account[n - 1].commonCostReal }}</th>
+          <th>{{ account[n - 1].commonCost }}</th>
+        </tr>
+      </tbody>
     </table>
 
     <nuxt-link :to="{ path: '/' }" class="backlink">タイマーに戻る</nuxt-link>

@@ -2,30 +2,31 @@
   <section class="container">
     <div class="people-num">
       <h2
-        class="subtitle button is-info"
         id="config"
+        class="subtitle button is-info"
         @click="toggleFormShowStatus()"
       >
         設定
         <div></div>
       </h2>
       <div v-show="formShowStatus">
-        <div v-for="(account, index) in getAccounts" :key="`first-${index}`">
+        <div v-for="(account, index) in accounts" :key="`first-${index}`">
           <div class="field is-horizontal">
             <div class="field-label is-normal">
               <label class="label level-lavel">{{ account.text }}等級</label>
             </div>
             <div class="field-body">
               <div class="field">
-                <p class="control">
+                <div class="control">
                   <input
+                    :value="account.num"
                     class="input"
                     type="number"
                     min="0"
                     placeholder="0"
                     @blur="accountNumChange(account.level, $event.target.value)"
                   />
-                </p>
+                </div>
               </div>
             </div>
           </div>
@@ -37,9 +38,9 @@
           Add a part-time worker
         </button>
         <div
-          class="part-time-worker-list"
           v-for="(partTimeWorker, index) in getPartTimeWorkers"
           :key="`second-${index}`"
+          class="part-time-worker-list"
         >
           <div class="field is-horizontal">
             <div class="field-label is-normal">
@@ -52,7 +53,7 @@
                 </div>
                 <div class="field-body">
                   <div class="field">
-                    <p class="control">
+                    <div class="control">
                       <input
                         type="number"
                         class="input"
@@ -66,7 +67,7 @@
                           )
                         "
                       />
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -76,7 +77,7 @@
                 </div>
                 <div class="field-body">
                   <div class="field">
-                    <p class="control">
+                    <div class="control">
                       <input
                         type="number"
                         class="input"
@@ -90,7 +91,7 @@
                           )
                         "
                       />
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -103,14 +104,15 @@
           </div>
           <div class="field-body">
             <div class="field">
-              <p class="control">
+              <div class="control">
                 <input
+                  :value="estimateTime"
                   class="input"
                   type="number"
                   placeholder="30分"
                   @blur="updateEstimateTime($event.target.value)"
                 />
-              </p>
+              </div>
             </div>
           </div>
         </div>
@@ -134,40 +136,46 @@
     <div class="main-content">
       <h2 class="subtitle button is-info">Meeting状況</h2>
       <table class="table is-hoverable">
-        <tr v-if="getEstimateTime === 0 || leftTimerMode">
-          <th class="table-th-left">経過時間</th>
-          <th>{{ toHms(getTimer) }}</th>
-        </tr>
-        <tr v-if="getEstimateTime !== 0 && !leftTimerMode">
-          <th class="table-th-left">残り時間</th>
-          <th>{{ toHms(getEstimateTime * 60 - getTimer) }}</th>
-        </tr>
-        <tr>
-          <th class="table-th-left">人件費原価</th>
-          <th>{{ Math.round(getMoney) }}円</th>
-        </tr>
-        <tr>
-          <th class="table-th-left">共通費込み</th>
-          <th>{{ Math.round(getMoneyAddCommonCost) }}円</th>
-        </tr>
-        <tr v-if="getEstimateTime !== 0 && leftTimerMode">
-          <th class="table-th-left">
-            想定価格
-          </th>
-          <th>{{ Math.round(getEstimateMoney) }}円</th>
-        </tr>
-        <tr v-if="getEstimateTime !== 0 && !leftTimerMode">
-          <th class="table-th-left">
-            残り予算
-          </th>
-          <th>{{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円</th>
-        </tr>
-        <tr v-if="getTimerState === 3 && getEstimateTime !== 0">
-          <th class="table-th-left">
-            節約価格
-          </th>
-          <th>{{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円</th>
-        </tr>
+        <tbody>
+          <tr v-if="getEstimateTime === 0 || leftTimerMode">
+            <th class="table-th-left">経過時間</th>
+            <th>{{ toHms(getTimer) }}</th>
+          </tr>
+          <tr v-if="getEstimateTime !== 0 && !leftTimerMode">
+            <th class="table-th-left">残り時間</th>
+            <th>{{ toHms(getEstimateTime * 60 - getTimer) }}</th>
+          </tr>
+          <tr>
+            <th class="table-th-left">人件費原価</th>
+            <th>{{ Math.round(getMoney) }}円</th>
+          </tr>
+          <tr>
+            <th class="table-th-left">共通費込み</th>
+            <th>{{ Math.round(getMoneyAddCommonCost) }}円</th>
+          </tr>
+          <tr v-if="getEstimateTime !== 0 && leftTimerMode">
+            <th class="table-th-left">
+              想定価格
+            </th>
+            <th>{{ Math.round(getEstimateMoney) }}円</th>
+          </tr>
+          <tr v-if="getEstimateTime !== 0 && !leftTimerMode">
+            <th class="table-th-left">
+              残り予算
+            </th>
+            <th>
+              {{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円
+            </th>
+          </tr>
+          <tr v-if="getTimerState === 3 && getEstimateTime !== 0">
+            <th class="table-th-left">
+              節約価格
+            </th>
+            <th>
+              {{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円
+            </th>
+          </tr>
+        </tbody>
       </table>
 
       <div>
@@ -208,19 +216,6 @@ export default {
   mixins: [timerStates],
   data() {
     return {
-      accountNums: {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
-        8: 0,
-        9: 0,
-        10: 0,
-        11: 0
-      },
       leftTimerMode: true,
       formShowStatus: true
     }
@@ -236,7 +231,17 @@ export default {
       getCommonCostRealMode: 'getCommonCostRealMode',
       getEstimateTime: 'getEstimateTime',
       getPartTimeWorkers: 'getPartTimeWorkers'
-    })
+    }),
+    accounts: {
+      get() {
+        return this.getAccounts
+      }
+    },
+    estimateTime: {
+      get() {
+        return this.getEstimateTime
+      }
+    }
   },
   methods: {
     toggleLeftTimerMode() {
@@ -248,9 +253,9 @@ export default {
     accountNumChange(level, eValue) {
       const accounts = {
         level,
-        accountNum: eValue
+        accountNum: parseInt(eValue)
       }
-      this.accountNums[level] = eValue
+      // this.accountNums[level] = eValue
       this.$store.dispatch('updateAccountNum', accounts)
       this.$store.commit('calcEstimateMoney', this.getEstimateTime)
     },
