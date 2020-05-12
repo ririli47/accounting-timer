@@ -31,7 +31,7 @@
                 >
                 <a
                   class="button is-light is-danger template-delete"
-                  @click="deleteTemplate(template.docId)"
+                  @click="openModal(template.docId)"
                   >Delete</a
                 >
               </div>
@@ -57,6 +57,32 @@
       </div>
     </nav>
     <nuxt />
+    <div class="modal" id="delete-modal">
+      <div class="modal-background" @click="closeModal"></div>
+      <div class="modal-content">
+        <div class="box">
+          本当に削除しますか？<br />
+          テンプレート名： {{ getTemplateLabel }}
+
+          <div class="buttons">
+            <a class="button is-light is-primary is-right" @click="closeModal">
+              <strong>キャンセル</strong>
+            </a>
+            <a
+              class="button is-light is-danger is-right"
+              @click="deleteTemplate"
+            >
+              <strong>削除する</strong>
+            </a>
+          </div>
+        </div>
+      </div>
+      <button
+        class="modal-close is-large"
+        aria-label="close"
+        @click="closeModal"
+      ></button>
+    </div>
   </div>
 </template>
 
@@ -68,7 +94,9 @@ export default {
     ...mapGetters({
       getUser: 'getUser',
       getIsLogin: 'getIsLogin',
-      getTemplates: 'templates/getTemplates'
+      getTemplates: 'templates/getTemplates',
+      getTemplateLabel: 'templates/getTemplateLabel',
+      getSelectedTemplateId: 'templates/getSelectedTemplateId'
     })
   },
   methods: {
@@ -140,6 +168,34 @@ export default {
       this.$store.dispatch('templates/setEditMode', true)
 
       this.$router.push('/templates')
+    },
+    deleteTemplate() {
+      console.log(this.getSelectedTemplateId)
+      this.$store.dispatch(
+        'templates/deleteTemplate',
+        this.getSelectedTemplateId
+      )
+      this.closeModal()
+    },
+    openModal(templateId) {
+      // selectedTemplateId
+      this.$store.dispatch('templates/setSelectedTemplateId', templateId)
+      const selectedTemplate = this.getTemplates.filter(template => {
+        return template.docId === templateId
+      })
+
+      // templateLabel
+      this.$store.dispatch(
+        'templates/setTemplateLabel',
+        selectedTemplate[0].label
+      )
+
+      const modal = document.getElementById('delete-modal')
+      modal.classList.add('is-show')
+    },
+    closeModal() {
+      const modal = document.getElementById('delete-modal')
+      modal.classList.remove('is-show')
     }
   }
 }
@@ -218,5 +274,18 @@ html {
 .template-delete {
   width: 20%;
   margin-right: 5px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.is-show {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  visibility: visible;
 }
 </style>

@@ -13,6 +13,9 @@ const config = {
   measurementId: 'G-8Z76RKVF6N'
 }
 
-!firebase.apps.length ? firebase.initializeApp(config) : firebase.app()
+if (!firebase.apps.length) {
+  firebase.initializeApp(config)
+  firebase.analytics()
+} else [firebase.app()]
 
 export default firebase

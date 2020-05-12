@@ -28,6 +28,11 @@ export const mutations = {
   },
   setSelectedTemplateId(state, payload) {
     state.selectedTemplateId = payload
+  },
+  deleteTemplate(state, payload) {
+    state.templates = state.templates.filter(template => {
+      return template.docId !== payload
+    })
   }
 }
 
@@ -85,6 +90,19 @@ export const actions = {
 
         commit('clearTemplates')
         dispatch('fetchTemplates', templateData.uid)
+      })
+      .catch(function(error) {
+        console.error('Error adding document: ', error)
+      })
+  },
+  deleteTemplate({ commit }, templateId) {
+    templatesRef
+      .doc(templateId)
+      .delete()
+      .then(function(docRef) {
+        console.log('success')
+
+        commit('deleteTemplate', templateId)
       })
       .catch(function(error) {
         console.error('Error adding document: ', error)
