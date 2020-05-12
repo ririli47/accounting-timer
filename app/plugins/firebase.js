@@ -9,13 +9,13 @@ const config = {
   projectId: 'meteor-2de65',
   storageBucket: 'meteor-2de65.appspot.com',
   messagingSenderId: '284743984432',
-  appId: '1:284743984432:web:6ca89ddd4f81461ca054f5',
-  measurementId: 'G-8Z76RKVF6N'
+  appId: '1:284743984432:web:6ca89ddd4f81461ca054f5'
 }
 
 if (!firebase.apps.length) {
   firebase.initializeApp(config)
-  firebase.analytics()
-} else [firebase.app()]
+} else {
+  firebase.app()
+}
 
 export default firebase

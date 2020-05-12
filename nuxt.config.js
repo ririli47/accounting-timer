@@ -42,6 +42,12 @@ export default {
     '@nuxtjs/bulma',
     'nuxt-client-init-module'
   ],
+  buildModules: [
+    '@nuxtjs/google-analytics'
+  ],
+  googleAnalytics: {
+    id: 'UA-116063973-4'
+  },
   /*
    ** Axios module configuration
    */

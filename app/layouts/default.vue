@@ -57,7 +57,7 @@
       </div>
     </nav>
     <nuxt />
-    <div class="modal" id="delete-modal">
+    <div id="delete-modal" class="modal">
       <div class="modal-background" @click="closeModal"></div>
       <div class="modal-content">
         <div class="box">
