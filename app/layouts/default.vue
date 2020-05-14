@@ -144,6 +144,8 @@ export default {
       try {
         this.$store.dispatch('setIsLogin', false)
 
+        this.$store.dispatch('templates/clearTemplates')
+
         console.log('starting...')
         await this.$store.dispatch('googleSignOut')
         console.log('logouting...')

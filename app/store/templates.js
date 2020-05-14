@@ -42,7 +42,10 @@ export const actions = {
     state.templates.forEach(template => {
       templateIds.push(template.id)
     })
-    const maxTemplateId = Math.max(...templateIds)
+    let maxTemplateId = 0
+    if (templateIds.length !== 0) {
+      maxTemplateId = Math.max(...templateIds)
+    }
 
     if (templateData.label === '') {
       templateData.label = 'template' + (parseInt(maxTemplateId) + 1)
@@ -70,11 +73,18 @@ export const actions = {
     state.templates.forEach(template => {
       templateIds.push(parseInt(template.id))
     })
-    const maxTemplateId = Math.max(...templateIds)
+    let maxTemplateId = 0
+    if (templateIds.length !== 0) {
+      maxTemplateId = Math.max(...templateIds)
+    }
 
     if (templateData.label === '') {
       templateData.label = 'template' + (parseInt(maxTemplateId) + 1)
     }
+
+    const editingTemplate = state.templates.filter(template => {
+      return template.docId === templateData.docId
+    })
 
     templatesRef
       .doc(templateData.docId)
@@ -83,7 +93,7 @@ export const actions = {
         accounts: templateData.accounts,
         estimateTime: templateData.estimateTime,
         label: templateData.label,
-        id: parseInt(maxTemplateId) + 1
+        id: editingTemplate[0].id
       })
       .then(function(docRef) {
         console.log('success')
@@ -118,15 +128,14 @@ export const actions = {
           res.forEach(doc => {
             const template = doc.data()
             template.docId = doc.id
-
             commit('setTemplate', template)
             // return true
-            resolve(true)
           })
+          resolve(true)
         })
         .catch(error => {
           console.log('error : ' + error)
-          return false
+          resolve(false)
         })
     })
   },
@@ -138,6 +147,9 @@ export const actions = {
   },
   setSelectedTemplateId({ commit }, selectedTemplateId) {
     commit('setSelectedTemplateId', selectedTemplateId)
+  },
+  clearTemplates({ commit }) {
+    commit('clearTemplates')
   }
 }
 
