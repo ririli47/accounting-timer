@@ -167,7 +167,12 @@ export const mutations = {
     state.isLogin = payload
   },
   signOut(state) {
-    state.user = null
+    state.user = {
+      email: '',
+      displayName: '',
+      uid: '',
+      metadata: ''
+    }
   },
   addTimer(state, addTime) {
     state.timer += addTime
@@ -371,7 +376,6 @@ export const actions = {
       })
   },
   registerUser({ commit }, user) {
-    console.log(user)
     userRef
       .doc(user.uid)
       .set({

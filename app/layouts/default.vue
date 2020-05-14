@@ -115,7 +115,6 @@ export default {
       getSelectedTemplateId: 'templates/getSelectedTemplateId'
     }),
     isEmptyTemplate() {
-      console.log(this.getTemplates)
       return this.getTemplates.length === 0
     }
   },
@@ -143,11 +142,11 @@ export default {
     },
     async signOut() {
       try {
+        this.$store.dispatch('setIsLogin', false)
+
         console.log('starting...')
         await this.$store.dispatch('googleSignOut')
         console.log('logouting...')
-
-        this.$store.dispatch('setIsLogin', false)
       } catch (e) {
         console.log(e)
       }
@@ -190,7 +189,6 @@ export default {
       this.$router.push('/templates')
     },
     deleteTemplate() {
-      console.log(this.getSelectedTemplateId)
       this.$store.dispatch(
         'templates/deleteTemplate',
         this.getSelectedTemplateId

@@ -116,8 +116,6 @@ export const actions = {
         .get()
         .then(res => {
           res.forEach(doc => {
-            console.log('success : ' + `${doc.id}`)
-
             const template = doc.data()
             template.docId = doc.id
 
