@@ -15,100 +15,97 @@ export const state = () => ({
     {
       level: 1,
       text: '1',
-      salary: 2135,
-      profitableSalary: 10000,
+      salary: 2316,
       num: 0,
-      commonCost: 1750,
+      commonCost: 2316,
       commonCostReal: 2800
     },
     {
       level: 2,
       text: '2',
-      salary: 2396,
-      profitableSalary: 10300,
+      salary: 2595,
       num: 0,
-      commonCost: 1965,
+      commonCost: 2595,
       commonCostReal: 2800
     },
     {
       level: 3,
       text: '3',
-      salary: 2682,
-      profitableSalary: 10700,
+      salary: 2907,
       num: 0,
-      commonCost: 2199,
+      commonCost: 2907,
       commonCostReal: 2800
     },
     {
       level: 4,
       text: '4',
-      salary: 2969,
-      profitableSalary: 11100,
+      salary: 3220,
       num: 0,
-      commonCost: 2435,
+      commonCost: 3220,
       commonCostReal: 2800
     },
     {
       level: 5,
       text: '5',
-      salary: 3385,
-      profitableSalary: 11700,
+      salary: 3666,
       num: 0,
-      commonCost: 2800,
+      commonCost: 3666,
       commonCostReal: 2800
     },
     {
       level: 6,
       text: 'V0',
-      salary: 4010,
-      profitableSalary: 12600,
+      salary: 4347,
       num: 0,
-      commonCost: 3288,
+      commonCost: 4347,
       commonCostReal: 2800
     },
     {
       level: 7,
       text: 'V1',
-      salary: 4583,
-      profitableSalary: 13500,
+      salary: 4967,
       num: 0,
-      commonCost: 4496,
+      commonCost: 4967,
       commonCostReal: 2800
     },
     {
       level: 8,
       text: 'V2',
-      salary: 5208,
-      profitableSalary: 14300,
+      salary: 5642,
       num: 0,
-      commonCost: 4270,
+      commonCost: 5642,
       commonCostReal: 2800
     },
     {
       level: 9,
       text: 'V3',
-      salary: 5990,
-      profitableSalary: 15500,
+      salary: 6490,
       num: 0,
-      commonCost: 4911,
+      commonCost: 6490,
       commonCostReal: 2800
     },
     {
       level: 10,
       text: 'V4',
-      salary: 6875,
-      profitableSalary: 16700,
+      salary: 7540,
       num: 0,
-      commonCost: 5637,
+      commonCost: 7540,
       commonCostReal: 2800
     },
     {
       level: 11,
       text: 'V5',
-      salary: 7813,
-      profitableSalary: 18100,
+      salary: 8471,
       num: 0,
-      commonCost: 6407,
+      commonCost: 8471,
+      commonCostReal: 2800
+    },
+    {
+      level: 12,
+      text: 'V6',
+      salary: 9487,
+      num: 0,
+      commonCost: 9487,
       commonCostReal: 2800
     }
   ],
