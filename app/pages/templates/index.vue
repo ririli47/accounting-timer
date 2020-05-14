@@ -1,10 +1,10 @@
 <template>
   <section class="container">
     <div class="people-num">
-      <h2 v-if="getEditMode" class="subtitle">
+      <h2 v-show="getEditMode" class="subtitle">
         テンプレート編集
       </h2>
-      <h2 v-else class="subtitle">
+      <h2 v-show="!getEditMode" class="subtitle">
         テンプレート登録
       </h2>
       <div v-for="(account, index) in accounts" :key="`first-${index}`">
@@ -67,14 +67,14 @@
     </div>
     <div class="buttons">
       <a
-        v-if="getEditMode"
+        v-show="getEditMode"
         class="button is-light is-primary is-right"
         @click="registerTemplate"
       >
         <strong>更新する</strong>
       </a>
       <a
-        v-else
+        v-show="!getEditMode"
         class="button is-light is-primary is-right"
         @click="registerTemplate"
       >

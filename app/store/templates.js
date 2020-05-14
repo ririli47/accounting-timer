@@ -109,25 +109,28 @@ export const actions = {
       })
   },
   fetchTemplates({ commit }, userId) {
-    templatesRef
-      .where('userId', '==', userId)
-      .orderBy('id', 'asc')
-      .get()
-      .then(res => {
-        res.forEach(doc => {
-          console.log('success : ' + `${doc.id}`)
+    return new Promise(resolve => {
+      templatesRef
+        .where('userId', '==', userId)
+        .orderBy('id', 'asc')
+        .get()
+        .then(res => {
+          res.forEach(doc => {
+            console.log('success : ' + `${doc.id}`)
 
-          const template = doc.data()
-          template.docId = doc.id
+            const template = doc.data()
+            template.docId = doc.id
 
-          commit('setTemplate', template)
-          return true
+            commit('setTemplate', template)
+            // return true
+            resolve(true)
+          })
         })
-      })
-      .catch(error => {
-        console.log('error : ' + error)
-        return false
-      })
+        .catch(error => {
+          console.log('error : ' + error)
+          return false
+        })
+    })
   },
   setEditMode({ commit }, editModeFlg) {
     commit('setEditMode', editModeFlg)

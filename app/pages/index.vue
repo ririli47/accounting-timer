@@ -137,11 +137,11 @@
       <h2 class="subtitle button is-info">Meeting状況</h2>
       <table class="table is-hoverable">
         <tbody>
-          <tr v-if="getEstimateTime === 0 || leftTimerMode">
+          <tr v-show="getEstimateTime === 0 || leftTimerMode">
             <th class="table-th-left">経過時間</th>
             <th>{{ toHms(getTimer) }}</th>
           </tr>
-          <tr v-if="getEstimateTime !== 0 && !leftTimerMode">
+          <tr v-show="getEstimateTime !== 0 && !leftTimerMode">
             <th class="table-th-left">残り時間</th>
             <th>{{ toHms(getEstimateTime * 60 - getTimer) }}</th>
           </tr>
@@ -153,13 +153,13 @@
             <th class="table-th-left">共通費込み</th>
             <th>{{ Math.round(getMoneyAddCommonCost) }}円</th>
           </tr>
-          <tr v-if="getEstimateTime !== 0 && leftTimerMode">
+          <tr v-show="getEstimateTime !== 0 && leftTimerMode">
             <th class="table-th-left">
               想定価格
             </th>
             <th>{{ Math.round(getEstimateMoney) }}円</th>
           </tr>
-          <tr v-if="getEstimateTime !== 0 && !leftTimerMode">
+          <tr v-show="getEstimateTime !== 0 && !leftTimerMode">
             <th class="table-th-left">
               残り予算
             </th>
@@ -167,7 +167,7 @@
               {{ Math.round(getEstimateMoney - getMoneyAddCommonCost) }}円
             </th>
           </tr>
-          <tr v-if="getTimerState === 3 && getEstimateTime !== 0">
+          <tr v-show="getTimerState === 3 && getEstimateTime !== 0">
             <th class="table-th-left">
               節約価格
             </th>
@@ -180,27 +180,31 @@
 
       <div>
         <button
-          v-if="getTimerState != 2"
+          v-show="getTimerState != 2"
           class="button is-link is-large"
           @click="startTimer()"
         >
           Start
         </button>
         <button
-          v-if="getTimerState == 2"
+          v-show="getTimerState == 2"
           class="button is-warning is-large"
           @click="stopTimer()"
         >
           Stop
         </button>
         <button
-          v-if="getTimerState != 1"
+          v-show="getTimerState != 1"
           class="button is-danger is-large"
           @click="resetTimer()"
         >
           Reset
         </button>
-        <button class="button is-info is-large" @click="toggleLeftTimerMode()">
+        <button
+          v-if="estimateTime != ''"
+          class="button is-info is-large"
+          @click="toggleLeftTimerMode()"
+        >
           表示モード切り替え
         </button>
       </div>

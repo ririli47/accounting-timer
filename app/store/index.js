@@ -113,7 +113,13 @@ export const state = () => ({
     }
   ],
   partTimeWorkers: [],
-  user: null,
+  user: {
+    email: '',
+    displayName: '',
+    uid: '',
+    metadata: ''
+  },
+  // user: null,
   isLogin: false
 })
 
@@ -271,6 +277,7 @@ export const actions = {
       }
 
       await dispatch('templates/fetchTemplates', user.uid)
+
       await commit('setUser', { email, displayName, uid, metadata })
       await commit('setIsLogin', true)
     }

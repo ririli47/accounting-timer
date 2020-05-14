@@ -8,46 +8,56 @@
       </div>
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-end">
-          <div v-if="getIsLogin" class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link"> {{ getUser.displayName }} </a>
+          <div
+            v-show="getIsLogin"
+            class="navbar-item has-dropdown is-hoverable"
+          >
+            <a class="navbar-link">
+              {{ getUser.displayName }}
+            </a>
             <div class="navbar-dropdown is-right">
-              <div
-                v-for="template in getTemplates"
-                :key="template.docId"
-                class="template-menu"
-              >
-                <a
-                  class="navbar-item template-label"
-                  @click="setTemplate(template.docId)"
-                  >{{ template.label }}
-                </a>
-                <p class="template-text" @click="setTemplate(template.docId)">
-                  を読み込む
-                </p>
-                <a
-                  class="button is-light is-info template-edit"
-                  @click="editTemplate(template.docId)"
-                  >Edit</a
+              <div v-if="!isEmptyTemplate">
+                <div
+                  v-for="template in getTemplates"
+                  :key="template.docId"
+                  class="template-menu"
                 >
-                <a
-                  class="button is-light is-danger template-delete"
-                  @click="openModal(template.docId)"
-                  >Delete</a
-                >
+                  <a
+                    class="navbar-item template-label"
+                    @click="setTemplate(template.docId)"
+                  >
+                    {{ template.label }}
+                  </a>
+                  <p class="template-text" @click="setTemplate(template.docId)">
+                    を読み込む
+                  </p>
+                  <a
+                    class="button is-light is-info template-edit"
+                    @click="editTemplate(template.docId)"
+                  >
+                    Edit
+                  </a>
+                  <a
+                    class="button is-light is-danger template-delete"
+                    @click="openModal(template.docId)"
+                  >
+                    Delete
+                  </a>
+                </div>
               </div>
               <hr class="navbar-divider" />
-              <nuxt-link :to="{ path: '/templates' }" class="navbar-item"
-                >お気に入り設定を登録する</nuxt-link
-              >
+              <nuxt-link :to="{ path: '/templates' }" class="navbar-item">
+                お気に入り設定を登録する
+              </nuxt-link>
             </div>
           </div>
           <div class="navbar-item">
-            <div v-if="!getIsLogin" class="buttons">
+            <div v-show="!getIsLogin" class="buttons">
               <a class="button is-light is-primary" @click="signIn">
                 <strong>SignIn</strong>
               </a>
             </div>
-            <div v-else class="buttons">
+            <div v-show="getIsLogin" class="buttons">
               <a class="button is-light is-primary" @click="signOut">
                 <strong>SignOut</strong>
               </a>
@@ -63,7 +73,6 @@
         <div class="box">
           本当に削除しますか？<br />
           テンプレート名： {{ getTemplateLabel }}
-
           <div class="buttons">
             <a class="button is-light is-primary is-right" @click="closeModal">
               <strong>キャンセル</strong>
@@ -81,7 +90,9 @@
         class="modal-close is-large"
         aria-label="close"
         @click="closeModal"
-      ></button>
+      >
+        close
+      </button>
     </div>
   </div>
 </template>
@@ -97,7 +108,11 @@ export default {
       getTemplates: 'templates/getTemplates',
       getTemplateLabel: 'templates/getTemplateLabel',
       getSelectedTemplateId: 'templates/getSelectedTemplateId'
-    })
+    }),
+    isEmptyTemplate() {
+      console.log(this.getTemplates)
+      return this.getTemplates.length === 0
+    }
   },
   methods: {
     async signIn() {
@@ -109,11 +124,11 @@ export default {
         const user = this.$store.getters.getUser
 
         if (user != null) {
-          this.$store.dispatch('setIsLogin', true)
-
           console.log('logined')
 
-          this.$store.dispatch('templates/fetchTemplates', user.uid)
+          await this.$store.dispatch('templates/fetchTemplates', user.uid)
+
+          this.$store.dispatch('setIsLogin', true)
         } else {
           Error('cannot login')
         }
