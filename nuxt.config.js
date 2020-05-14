@@ -40,9 +40,7 @@ export default {
     '@nuxtjs/axios',
     // Doc:https://github.com/nuxt-community/modules/tree/master/packages/bulma
     '@nuxtjs/bulma',
-    'nuxt-client-init-module'
-  ],
-  buildModules: [
+    'nuxt-client-init-module',
     '@nuxtjs/google-analytics'
   ],
   googleAnalytics: {
