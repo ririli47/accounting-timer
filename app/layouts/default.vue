@@ -7,63 +7,68 @@
         </a>
       </div>
       <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-end">
-          <div
-            v-show="getIsLogin"
-            class="navbar-item has-dropdown is-hoverable"
-          >
-            <a class="navbar-link">
-              {{ getUser.displayName }}
-            </a>
-            <div class="navbar-dropdown is-right">
-              <div v-if="!isEmptyTemplate">
-                <div
-                  v-for="template in getTemplates"
-                  :key="template.docId"
-                  class="template-menu"
-                >
-                  <a
-                    class="navbar-item template-label"
-                    @click="setTemplate(template.docId)"
+        <no-ssr>
+          <div class="navbar-end">
+            <div
+              v-show="getIsLogin"
+              class="navbar-item has-dropdown is-hoverable"
+            >
+              <a class="navbar-link">
+                {{ getUser.displayName }}
+              </a>
+              <div class="navbar-dropdown is-right">
+                <div v-if="!isEmptyTemplate">
+                  <div
+                    v-for="template in getTemplates"
+                    :key="template.docId"
+                    class="template-menu"
                   >
-                    {{ template.label }}
-                  </a>
-                  <p class="template-text" @click="setTemplate(template.docId)">
-                    を読み込む
-                  </p>
-                  <a
-                    class="button is-light is-info template-edit"
-                    @click="editTemplate(template.docId)"
-                  >
-                    Edit
-                  </a>
-                  <a
-                    class="button is-light is-danger template-delete"
-                    @click="openModal(template.docId)"
-                  >
-                    Delete
-                  </a>
+                    <a
+                      class="navbar-item template-label"
+                      @click="setTemplate(template.docId)"
+                    >
+                      {{ template.label }}
+                    </a>
+                    <p
+                      class="template-text"
+                      @click="setTemplate(template.docId)"
+                    >
+                      を読み込む
+                    </p>
+                    <a
+                      class="button is-light is-info template-edit"
+                      @click="editTemplate(template.docId)"
+                    >
+                      Edit
+                    </a>
+                    <a
+                      class="button is-light is-danger template-delete"
+                      @click="openModal(template.docId)"
+                    >
+                      Delete
+                    </a>
+                  </div>
                 </div>
+                <hr class="navbar-divider" />
+                <nuxt-link :to="{ path: '/templates' }" class="navbar-item">
+                  お気に入り設定を登録する
+                </nuxt-link>
               </div>
-              <hr class="navbar-divider" />
-              <nuxt-link :to="{ path: '/templates' }" class="navbar-item">
-                お気に入り設定を登録する
-              </nuxt-link>
+            </div>
+            <div class="navbar-item">
+              <div v-show="!getIsLogin" class="buttons">
+                <a class="button is-light is-primary" @click="signIn">
+                  <strong>SignIn</strong>
+                </a>
+              </div>
+              <div v-show="getIsLogin" class="buttons">
+                <a class="button is-light is-primary" @click="signOut">
+                  <strong>SignOut</strong>
+                </a>
+              </div>
             </div>
           </div>
-          <div class="navbar-item">
-            <div v-show="!getIsLogin" class="buttons">
-              <a class="button is-light is-primary" @click="signIn">
-                <strong>SignIn</strong>
-              </a>
-            </div>
-            <div v-show="getIsLogin" class="buttons">
-              <a class="button is-light is-primary" @click="signOut">
-                <strong>SignOut</strong>
-              </a>
-            </div>
-          </div>
-        </div>
+        </no-ssr>
       </div>
     </nav>
     <nuxt />
